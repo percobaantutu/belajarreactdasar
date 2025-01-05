@@ -4,14 +4,8 @@ import { Link } from "react-router-dom";
 
 const LoginPage = () => {
   return (
-    <AuthLayout title="Login">
+    <AuthLayout title="Login" type="login">
       <FormLogin></FormLogin>
-      <p className="text-slate-700 my-6 text-center">
-        Don't have an account?{" "}
-        <Link to="/register" className="text-blue-600 font-semibold">
-          Register
-        </Link>
-      </p>
     </AuthLayout>
   );
 };
