@@ -1,24 +1,18 @@
 import { Link } from "react-router-dom";
 
 const CardProduct = ({ children }) => {
-  return (
-    <Link to="/">
-      {" "}
-      <div className="card bg-base-100 w-56 shadow-xl mx-3">{children}</div>
-    </Link>
-  );
+  return <div className="card bg-base-100 w-56 shadow-xl mx-3">{children}</div>;
 };
 
-const Header = () => {
+const Header = ({ image }) => {
   return (
     <figure>
-      <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
+      <img src={image} alt="Product" />
     </figure>
   );
 };
 
-const Body = (props) => {
-  const { productname, children } = props;
+const Body = ({ productname, children }) => {
   return (
     <div className="card-body">
       <h2 className="card-title">{productname}</h2>
