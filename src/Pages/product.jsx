@@ -1,3 +1,4 @@
+import Button from "../Components/Elements/Button";
 import CardProduct from "../Components/Fragments/CardProduct";
 
 const products = [
@@ -24,17 +25,42 @@ const products = [
   },
 ];
 
+const email = localStorage.getItem("email");
+
 const Products = () => {
+  const handleLogout = () => {
+    localStorage.removeItem("email");
+    localStorage.removeItem("password");
+    window.location.href = "/login";
+  };
+
   return (
-    <div className="min-h-screen flex justify-center items-center">
-      {products.map((product) => (
-        <CardProduct key={product.id}>
-          <CardProduct.Header image={product.image} />
-          <CardProduct.Body productname={product.name}>
-            {product.description} <br /> Rp {product.price}
-          </CardProduct.Body>
-        </CardProduct>
-      ))}
+    <div>
+      <div className="navbar bg-base-100">
+        <div className="flex-1">
+          <a className="btn btn-ghost text-xl">TutuPedia</a>
+        </div>
+        <div className="flex-none">
+          <ul className="menu menu-horizontal px-1">
+            <li>
+              <p>{email}</p>
+            </li>
+            <li>
+              <Button children="Logout" variant="bg-blue-600 text-white" onClick={handleLogout} />
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div className="min-h-screen flex justify-center items-center">
+        {products.map((product) => (
+          <CardProduct key={product.id}>
+            <CardProduct.Header image={product.image} />
+            <CardProduct.Body productname={product.name}>
+              {product.description} <br /> Rp {product.price}
+            </CardProduct.Body>
+          </CardProduct>
+        ))}
+      </div>
     </div>
   );
 };
