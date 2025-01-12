@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
+import Button from "../Elements/Button";
 
 const CardProduct = ({ children }) => {
-  return <div className="card bg-base-100 w-56 shadow-xl mx-3">{children}</div>;
+  return <div className="card bg-base-100 w-56 shadow-xl mx-3 h-auto">{children}</div>;
 };
 
 const Header = ({ image }) => {
@@ -12,14 +12,22 @@ const Header = ({ image }) => {
   );
 };
 
-const Body = ({ productname, children }) => {
+const Body = ({ productname, description, price, onClick }) => {
   return (
-    <div className="card-body">
+    <div className="card-body p-4">
       <h2 className="card-title">{productname}</h2>
-      <p>{children}</p>
-      <div className="card-actions justify-end">
-        <button className="btn btn-primary">Buy Now</button>
-      </div>
+      <p>
+        {description} <br /> {price.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}
+      </p>
+      <CardButton onClick={onClick} />
+    </div>
+  );
+};
+
+const CardButton = ({ onClick }) => {
+  return (
+    <div className="card-actions justify-end">
+      <Button children="Add to Cart" variant="bg-blue-600 text-white" onClick={onClick} />
     </div>
   );
 };
