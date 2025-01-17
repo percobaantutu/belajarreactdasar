@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../Components/Elements/Button";
 import CardProduct from "../Components/Fragments/CardProduct";
 
@@ -30,6 +30,23 @@ const email = localStorage.getItem("email");
 
 const Products = () => {
   const [cart, setCart] = useState([]); // State to store cart items
+  const [totalPrice, setTotalPrice] = useState(0); // State to store total price
+
+  useEffect(() => {
+    setCart(JSON.parse(localStorage.getItem("cart")) || []);
+  }, []);
+
+  useEffect(() => {
+    // Calculate total price when cart changes
+    if (cart.length > 0) {
+      const total = cart.reduce((acc, item) => {
+        const product = products.find((product) => product.id === item.id);
+        return acc + item.quantity * product.price;
+      }, 0);
+      setTotalPrice(total);
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart]);
 
   const handleAddToCart = (product) => {
     setCart((prevCart) => {
@@ -103,6 +120,14 @@ const Products = () => {
                   </td>
                 </tr>
               )}
+              <tr className="font-bold text-left">
+                <td colSpan="3" className="">
+                  Total Price
+                </td>
+                <td colSpan="1" className="">
+                  {totalPrice.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
