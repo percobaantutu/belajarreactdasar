@@ -1,44 +1,28 @@
 import { useEffect, useState } from "react";
 import Button from "../Components/Elements/Button";
 import CardProduct from "../Components/Fragments/CardProduct";
-
-const products = [
-  {
-    id: "1",
-    name: "Sepatu 1",
-    image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-    price: 200000,
-    description: "If a dog chews shoes whose shoes does he choose?",
-  },
-  {
-    id: "2",
-    name: "Sepatu 2",
-    image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-    price: 500000,
-    description: "If a dog chews shoes whose shoes does he choose?",
-  },
-  {
-    id: "3",
-    name: "Sepatu 3",
-    image: "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
-    price: 1000000,
-    description: "If a dog chews shoes whose shoes does he choose?",
-  },
-];
+import { getProducts } from "../service/product.service";
 
 const email = localStorage.getItem("email");
 
 const Products = () => {
   const [cart, setCart] = useState([]); // State to store cart items
   const [totalPrice, setTotalPrice] = useState(0); // State to store total price
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     setCart(JSON.parse(localStorage.getItem("cart")) || []);
   }, []);
 
   useEffect(() => {
+    getProducts((data) => {
+      setProducts(data);
+    });
+  }, []);
+
+  useEffect(() => {
     // Calculate total price when cart changes
-    if (cart.length > 0) {
+    if (products.length > 0 && cart.length > 0) {
       const total = cart.reduce((acc, item) => {
         const product = products.find((product) => product.id === item.id);
         return acc + item.quantity * product.price;
@@ -46,7 +30,7 @@ const Products = () => {
       setTotalPrice(total);
       localStorage.setItem("cart", JSON.stringify(cart));
     }
-  }, [cart]);
+  }, [cart, products]);
 
   const handleAddToCart = (product) => {
     setCart((prevCart) => {
@@ -85,12 +69,13 @@ const Products = () => {
       </div>
       <div className="min-h-screen flex justify-center items-start mt-8 p-3">
         <div className=" w-4/6 flex flex-wrap">
-          {products.map((product) => (
-            <CardProduct key={product.id}>
-              <CardProduct.Header image={product.image} />
-              <CardProduct.Body productname={product.name} description={product.description} price={product.price} onClick={() => handleAddToCart(product)}></CardProduct.Body>
-            </CardProduct>
-          ))}
+          {products.length > 0 &&
+            products.map((product) => (
+              <CardProduct key={product.id}>
+                <CardProduct.Header image={product.image} />
+                <CardProduct.Body productname={product.title} description={product.description} price={product.price} onClick={() => handleAddToCart(product)}></CardProduct.Body>
+              </CardProduct>
+            ))}
         </div>
         <div className="overflow-x-auto w-2/6">
           <table className="table">
@@ -104,14 +89,15 @@ const Products = () => {
               </tr>
             </thead>
             <tbody>
-              {cart.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.name}</td>
-                  <td>Rp {item.price}</td>
-                  <td>{item.quantity}</td>
-                  <td>Rp {item.total}</td>
-                </tr>
-              ))}
+              {products.length > 0 &&
+                cart.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.title}</td>
+                    <td>$ {item.price}</td>
+                    <td>{item.quantity}</td>
+                    <td>$ {item.total}</td>
+                  </tr>
+                ))}
               {/* Show empty message if cart is empty */}
               {cart.length === 0 && (
                 <tr>
@@ -125,7 +111,7 @@ const Products = () => {
                   Total Price
                 </td>
                 <td colSpan="1" className="">
-                  {totalPrice.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}
+                  {totalPrice.toLocaleString("id-ID", { style: "currency", currency: "USD" })}
                 </td>
               </tr>
             </tbody>
