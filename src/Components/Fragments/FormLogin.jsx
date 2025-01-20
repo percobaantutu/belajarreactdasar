@@ -1,27 +1,50 @@
-import { useEffect, useRef, forwardRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../Elements/Button";
 import InputForm from "../Elements/Input";
+import { login } from "../../service/auth.serive";
 
 const FormLogin = () => {
+  const [loginFailed, setLoginFailed] = useState("");
   const handleLogin = (event) => {
-    localStorage.setItem(`email`, event.target.email.value);
-    localStorage.setItem(`password`, event.target.password.value);
     event.preventDefault();
-    window.location.href = "/products";
+    // localStorage.setItem(`email`, event.target.email.value);
+    // localStorage.setItem(`password`, event.target.password.value);
+
+    const data = {
+      username: event.target.username.value,
+      password: event.target.password.value,
+    };
+    login(data, (status, res) => {
+      if (status) {
+        localStorage.setItem("token", res);
+        window.location.href = "/products";
+      } else {
+        if (res.data) {
+          // Log server's error message
+          setLoginFailed(res.data);
+        } else if (res.message) {
+          // Log custom error message
+          setLoginFailed(res.message);
+        } else {
+          setLoginFailed("An error occurred");
+        }
+      }
+    });
   };
-  const emailRef = useRef(null);
+  const usernameRef = useRef(null);
 
   useEffect(() => {
-    emailRef.current.focus();
+    usernameRef.current.focus();
   }, []);
 
   return (
     <form onSubmit={handleLogin}>
-      <InputForm title="Email" name="email" placeholder="example@gmail.com" type="email" ref={emailRef} />
+      <InputForm title="username" name="username" placeholder="Jonh Doe" type="text" ref={usernameRef} />
       <InputForm title="Password" name="password" placeholder="*****" type="password" />
       <Button variant="bg-blue-600 text-white" type="submit">
         Submit
       </Button>
+      {loginFailed && <p className="text-red-500 text-center mt-2">{loginFailed}</p>}
     </form>
   );
 };
