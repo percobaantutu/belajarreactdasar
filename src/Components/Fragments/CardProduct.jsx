@@ -1,14 +1,17 @@
 import Button from "../Elements/Button";
+import { Link } from "react-router-dom";
 
 const CardProduct = ({ children }) => {
   return <div className="card bg-base-100 w-56 shadow-xl mx-3 my-2 h-auto">{children}</div>;
 };
 
-const Header = ({ image }) => {
+const Header = ({ image, id }) => {
   return (
-    <figure>
-      <img src={image} alt="Product" className="h-40 object-cover" />
-    </figure>
+    <Link to={`/products/${id}`}>
+      <figure>
+        <img src={image} alt="Product" className="h-40 object-cover" />
+      </figure>
+    </Link>
   );
 };
 
